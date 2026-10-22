@@ -56,6 +56,7 @@ app.use(
 );
 
 const configuredClientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/+$/, '') : null;
+const clientUrl = configuredClientUrl || 'http://localhost:3000';
 const allowedOrigins = [
   configuredClientUrl,
   'http://localhost:3000',
@@ -141,7 +142,7 @@ server.listen(PORT, () => {
   console.log(` NexChat Messaging Server Started `);
   console.log(` Port: ${PORT}`);
   console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(` Allowed Origin: ${clientUrl}`);
+  console.log(` Allowed Origins: ${allowedOrigins.join(', ')}`);
   console.log(`===============================================`);
 });
 
