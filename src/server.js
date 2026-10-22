@@ -96,6 +96,31 @@ app.use(cookieParser());
 // Static file serving for uploads
 app.use('/uploads', express.static(uploadDir));
 
+// Root endpoint - Server status and health indicator
+app.get('/', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'NexChat Messaging API Server is live and healthy',
+    version: '1.0.0',
+    status: 'online',
+    endpoints: {
+      health: '/health',
+      api: '/api',
+      auth: '/api/auth'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Base API info
+app.get('/api', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'NexChat API v1 is active and running',
+    version: '1.0.0'
+  });
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   const mongoose = require('mongoose');
