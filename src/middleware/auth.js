@@ -9,13 +9,13 @@ const protect = async (req, res, next) => {
   try {
     let token = null;
 
-    // Check cookie first (nexchat_token)
-    if (req.cookies && req.cookies.nexchat_token) {
-      token = req.cookies.nexchat_token;
-    }
     // Check Authorization header: Bearer <token>
-    else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
       token = req.headers.authorization.split(' ')[1];
+    }
+    // Check cookie fallback (nexchat_token)
+    else if (req.cookies && req.cookies.nexchat_token) {
+      token = req.cookies.nexchat_token;
     }
 
     if (!token) {

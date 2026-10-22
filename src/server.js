@@ -42,6 +42,9 @@ connectDB();
 const app = express();
 const server = http.createServer(app);
 
+// Trust reverse proxies (Render, AWS, Cloudflare) for accurate HTTPS detection
+app.set('trust proxy', 1);
+
 // Attach Socket.IO
 initSocket(server);
 
@@ -52,13 +55,30 @@ app.use(
   })
 );
 
-const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
+const configuredClientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/+$/, '') : null;
+const allowedOrigins = [
+  configuredClientUrl,
+  'http://localhost:3000',
+  'https://whatsapp-client-sooty.vercel.app'
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: clientUrl,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      const cleanOrigin = origin.replace(/\/+$/, '');
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.includes('localhost')
+      ) {
+        return callback(null, true);
+      }
+      return callback(null, true);
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
   })
 );
 

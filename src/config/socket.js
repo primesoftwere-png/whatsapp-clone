@@ -32,9 +32,27 @@ const onlineUsers = new Map();
  * Initialize Socket.IO server
  */
 const initSocket = (httpServer) => {
+  const configuredClientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.trim().replace(/\/+$/, '') : null;
+  const allowedOrigins = [
+    configuredClientUrl,
+    'http://localhost:3000',
+    'https://whatsapp-client-sooty.vercel.app'
+  ].filter(Boolean);
+
   io = new Server(httpServer, {
     cors: {
-      origin: process.env.CLIENT_URL || 'http://localhost:3000',
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        const cleanOrigin = origin.replace(/\/+$/, '');
+        if (
+          allowedOrigins.includes(cleanOrigin) ||
+          cleanOrigin.endsWith('.vercel.app') ||
+          cleanOrigin.includes('localhost')
+        ) {
+          return callback(null, true);
+        }
+        return callback(null, true);
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS']
     },
