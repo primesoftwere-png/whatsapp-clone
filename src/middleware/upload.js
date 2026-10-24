@@ -30,6 +30,13 @@ const allowedMimeTypes = [
   'image/png',
   'image/gif',
   'image/webp',
+  // Videos
+  'video/mp4',
+  'video/webm',
+  'video/quicktime',
+  'video/ogg',
+  'video/3gpp',
+  'video/x-matroska',
   // Documents
   'application/pdf',
   'application/msword',
@@ -44,14 +51,14 @@ const fileFilter = (req, file, cb) => {
     cb(
       new ApiError(
         400,
-        `Unsupported file type: ${file.mimetype}. Allowed types: JPEG, PNG, GIF, WEBP, PDF, DOC, DOCX, TXT`
+        `Unsupported file type: ${file.mimetype}. Allowed types: JPEG, PNG, GIF, WEBP, MP4, WEBM, MOV, PDF, DOC, DOCX, TXT`
       ),
       false
     );
   }
 };
 
-const maxFileSize = parseInt(process.env.MAX_FILE_SIZE, 10) || 10 * 1024 * 1024; // 10MB default
+const maxFileSize = parseInt(process.env.MAX_FILE_SIZE, 10) || 50 * 1024 * 1024; // 50MB default
 
 const upload = multer({
   storage,

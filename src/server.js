@@ -27,6 +27,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const reportRoutes = require('./routes/reportRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
+const statusRoutes = require('./routes/statusRoutes');
 
 // Ensure local uploads directory exists
 const uploadDir = path.resolve(process.cwd(), process.env.UPLOAD_DIR || 'uploads');
@@ -151,6 +152,7 @@ app.use('/api/notifications', protect, notificationRoutes);
 app.use('/api/reports', protect, reportRoutes);
 app.use('/api/admin', protect, adminOnly, adminRoutes);
 app.use('/api/uploads', protect, uploadRoutes);
+app.use('/api/status', protect, statusRoutes);
 
 // Catch-all for unhandled routes
 app.use((req, res, next) => {
